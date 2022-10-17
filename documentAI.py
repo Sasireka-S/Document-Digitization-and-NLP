@@ -1,42 +1,56 @@
 import os
 import streamlit as st
+import PyPDF2
 import numpy as np
+import pyttsx3 as pyttsx3
 from docx2pdf import convert
+import aspose.slides as slides
 import fitz
 import cv2
 from PIL import Image
-import gensim
 from gensim.parsing import remove_stopwords
 from pytesseract import pytesseract
 import warnings
 import pandas as pd
+import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.cluster.util import cosine_distance
 from textblob import TextBlob
 import heapq
+import gensim
 import gensim.corpora as corpora
 from gensim.models import CoherenceModel
 import re
 import spacy
-import PyPDF2
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 def docs_to_pdf(doc_file):
     """
     Convert .docx file to .pdf file if the input file is docx file
-    :param doc_file: URL of the docx file
+    :parameter doc_file: URL of the docx file
     :return
     URL of the pdf file
     """
     if doc_file.split(".")[1] == 'docx':
         convert(doc_file)
     return doc_file.split(".")[0]+".pdf"
+def ppt_to_pdf(doc_file):
+    """
+        Convert .ppt file to .pdf file if the input file is docx file
+        :parameter doc_file: URL of the ppt file
+        :return
+        URL of the pdf file
+    """
+    if doc_file.split(".")[1] == 'pptx' or doc_file.split(".")[1] == 'ppt' or doc_file.split(".")[1] == 'odp':
+        presentation = slides.Presentation(doc_file)
+        presentation.save(doc_file.split(".")[0]+".pdf", slides.export.SaveFormat.PDF)
+    return doc_file.split(".")[0]+".pdf"
 def img_to_pdf(doc_file):
     """
         Convert image file to .pdf file if the input file is docx file
-        :param doc_file: URL of the image file
+        :parameter doc_file: URL of the image file
         :return pdf_loc: URL of the pdf file
     """
     pdf_loc = doc_file.split(".")[0] + ".pdf"
@@ -49,7 +63,7 @@ def img_to_pdf(doc_file):
 def get_metadata(doc_file):
     """
         Extract metadata of the document
-        :param
+        :parameter
         doc_file: URL of the docx file
         :return
         metas: list of all the metadata of the document
@@ -64,7 +78,7 @@ def get_metadata(doc_file):
 def get_images(doc_file):
     """
         Extract images from the document and save it in the local system
-        :param
+        :parameter
         doc_file: URL of the docx file
         :return
         img_lst: list of URL of the saved images
@@ -113,7 +127,7 @@ def show_images(img_lst):
 def extract_text(doc_file):
     """
     Convert each page in pdf file into image and extract text from it
-    :param doc_file: URL of the document
+    :parameter doc_file: URL of the document
     :return: texts: List of all the sentences of the document
     """
     texts = []
@@ -166,6 +180,11 @@ def creation_date(doc_file):
     cdate = (hand_book.getDocumentInfo()['/CreationDate'])
     cdate = cdate[2:6] + "-" + cdate[6:8] + "-" + cdate[8:10]
     return cdate
+def hear(text):
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
+    return
 def keyword_extraction(text):
     """
     Extract only necessary words from the document
@@ -396,49 +415,61 @@ def save_uploadedfile(uploadedfile):
     with open(os.path.join(os.getcwd() , uploadedfile.name), "wb") as f:
         f.write(uploadedfile.getbuffer())
     return uploadedfile.name
-if __name__ == "__main__":
+def st_ui():
+    st.title("Document digitization")
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    datafile = 'demo.docx'
-    doc_file = docs_to_pdf(datafile)
-    doc_file = ppt_to_pdf(datafile)
-    doc_file = img_to_pdf(datafile)
-    author = str(author(doc_file))
-    print("Author of the Document : " + author)
-    creationDate = creation_date(doc_file)
-    print("Date of Creation " + creationDate)
-    total_pages = number(doc_file)
-    print("Document metadata :")
-    meta_data = get_metadata(doc_file)
-    print(meta_data)
-    img_lst = get_images(doc_file)
-    # show_images(img_lst)
-    doc_text = extract_text(doc_file)
-    keywords = keyword_extraction(doc_text)
-    df = make_df(doc_text)
-    bag_of_words = bow(doc_text)
-    t = bag_of_words.transpose()
-    print("Bag of Words :")
-    print(t)
-    top100 = most_frequent(doc_text)
-    print("Top 100 words in document :")
-    print(top100)
-    print("Polarity :")
-    print(polarity(keywords))
-    print("Subjectivity :")
-    print(subjectivity(keywords))
-    print(sentence_similarity("Hello I am a document reader", "Welcome to document reader show"))
-    summary = summarize(doc_text)
-    print("Summary of the document :")
-    print(summary)
-    topic = topic_modelling(doc_text)
-    print("Topic modelling :")
-    print(topic)
-    print("Document entities :")
-    print(entity(doc_text))
-    print("Lemmas of the document :")
-    print(lemmatization(doc_text))
-    print("POS tagging :")
-    print(pos_tag(doc_text))
-    print("Question answer finding :")
-    question = input("Enter your query to find an answer from the document")
-    print(search_ans(doc_text, question))
+    datafile = st.file_uploader(label='Your document will be processed', type=['png', 'jpg', 'pdf', 'docx', 'ppt'],
+                                accept_multiple_files=False, label_visibility="visible")
+    if datafile is not None:
+        file_details = {"FileName": datafile.name, "FileType": datafile.type}
+        datafile = save_uploadedfile(datafile)
+        doc_file = docs_to_pdf(datafile)
+        doc_file = ppt_to_pdf(datafile)
+        doc_file = img_to_pdf(datafile)
+        author = str(author(doc_file))
+        st.text("Author of the Document : " + author)
+        creationDate = creation_date(doc_file)
+        st.text("Date of Creation " + creationDate)
+        total_pages = number(doc_file)
+        st.text("Document metadata :")
+        meta_data = get_metadata(doc_file)
+        st.text(meta_data)
+        img_lst = get_images(doc_file)
+        # show_images(img_lst)
+        for x in img_lst:
+            img = cv2.imread(x, cv2.IMREAD_ANYCOLOR)
+            st.image(img, width=200)
+        doc_text = extract_text(doc_file)
+        keywords = keyword_extraction(doc_text)
+        df = make_df(doc_text)
+        bag_of_words = bow(doc_text)
+        t = bag_of_words.transpose()
+        st.text("Bag of Words :")
+        st.text(t)
+        top100 = most_frequent(doc_text)
+        st.text("Top 100 words in document :")
+        st.text(top100)
+        st.text("Polarity :")
+        st.text(polarity(keywords))
+        st.text("Subjectivity :")
+        st.text(subjectivity(keywords))
+        st.text(sentence_similarity("Hello I am a document reader", "Welcome to document reader show"))
+        summary = summarize(doc_text)
+        st.text("Summary of the document :")
+        st.text(summary)
+        topic = topic_modelling(doc_text)
+        st.text("Topic modelling :")
+        st.text(topic)
+        st.text("Document entities :")
+        st.text(entity(doc_text))
+        st.text("Lemmas of the document :")
+        st.text(lemmatization(doc_text))
+        st.text("POS tagging :")
+        st.text(pos_tag(doc_text))
+        st.text("Question answer finding :")
+        question = st.text_input("Enter your query to find an answer from the document")
+        st.text(search_ans(doc_text, question))
+    else:
+        st.text("Upload a file to process")
+if __name__ == "__main__":
+    st_ui()
