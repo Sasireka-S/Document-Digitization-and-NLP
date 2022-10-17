@@ -1,7 +1,6 @@
 import os
 import streamlit as st
 import re
-import spacy
 import numpy as np
 import fitz
 import cv2
@@ -10,6 +9,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.cluster.util import cosine_distance
+import spacy
 from textblob import TextBlob
 import heapq
 import gensim
