@@ -1,17 +1,10 @@
 import os
 import streamlit as st
-import PyPDF2
+import re
+import spacy
 import numpy as np
-import pyttsx3 as pyttsx3
-from docx2pdf import convert
-import aspose.slides as slides
 import fitz
 import cv2
-from PIL import Image
-from gensim.parsing import remove_stopwords
-from pytesseract import pytesseract
-import warnings
-import pandas as pd
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -22,9 +15,16 @@ import heapq
 import gensim
 import gensim.corpora as corpora
 from gensim.models import CoherenceModel
-import re
-import spacy
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+import PyPDF2
+import pyttsx3 as pyttsx3
+from docx2pdf import convert
+import aspose.slides as slides
+from PIL import Image
+from gensim.parsing import remove_stopwords
+from pytesseract import pytesseract
+import warnings
+import pandas as pd
 
 def docs_to_pdf(doc_file):
     """
