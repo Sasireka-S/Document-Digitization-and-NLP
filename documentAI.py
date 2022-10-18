@@ -7,7 +7,6 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.cluster.util import cosine_distance
-import spacy
 from textblob import TextBlob
 import heapq
 import gensim
@@ -293,19 +292,6 @@ def subjectivity(words):
     if val < 0.5:
         sub_val = 'Objective'
     return [val, sub_val]
-def entity(doc_text):
-    """
-    Performs Entity Recognition
-    :param doc_text: List of sentences in the document
-    :return: List of entites
-    """
-    nlp = spacy.load("en_core_web_sm")
-    entities = []
-    for text in doc_text:
-        doc = nlp(text)
-        for entity in doc.ents:
-            entities.append([entity.text, entity.label_])
-    return entities
 def pos_tag(doc_text):
     """
     Performs Parts Of Speech tagging
@@ -408,8 +394,7 @@ def st_ui():
         st.image(img, width=200)
     st.text("Extracting text in the document ...")
     doc_text = extract_text(doc_file)
-    for x in doc_text:
-        st.text(x)
+    st.text(doc_text)
     keywords = keyword_extraction(doc_text)
     df = make_df(doc_text)
     bag_of_words = bow(doc_text)
@@ -431,8 +416,6 @@ def st_ui():
     topic = topic_modelling(doc_text)
     st.text("Topic modelling :")
     st.text(topic)
-    st.text("Document entities :")
-    st.text(entity(doc_text))
     st.text("Lemmas of the document :")
     st.text(lemmatization(doc_text))
     st.text("POS tagging :")
