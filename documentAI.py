@@ -2,7 +2,6 @@ import os
 import streamlit as st
 import re
 import numpy as np
-from frontend import*
 import fitz
 import cv2
 import nltk
