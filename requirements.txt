@@ -30,6 +30,7 @@ distro
 Django
 docx2pdf
 docx2txt
+easyocr
 ebcdic
 entrypoints
 et-xmlfile
