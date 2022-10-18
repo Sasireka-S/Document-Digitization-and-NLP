@@ -402,7 +402,7 @@ def st_ui():
     st.text("Bag of Words :")
     st.text(t)
     top100 = most_frequent(doc_text)
-    st.text("Top 100 words in document :")
+    st.text("Most frequent words in document :")
     st.text(top100)
     st.text("Polarity :")
     st.text(polarity(keywords))
