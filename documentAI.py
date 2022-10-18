@@ -16,7 +16,6 @@ from gensim.models import CoherenceModel
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import PyPDF2
 import pyttsx3 as pyttsx3
-from docx2pdf import convert
 import fitz
 from PIL import Image
 from gensim.parsing import remove_stopwords
@@ -24,16 +23,6 @@ from pytesseract import pytesseract
 import warnings
 import pandas as pd
 import streamlit as st
-def docs_to_pdf(doc_file):
-    """
-    Convert .docx file to .pdf file if the input file is docx file
-    :parameter doc_file: URL of the docx file
-    :return
-    URL of the pdf file
-    """
-    pdf_loc = doc_file.split(".")[0] + ".pdf"
-    convert(doc_file)
-    return pdf_loc 
 def img_to_pdf(doc_file):
     """
         Convert image file to .pdf file if the input file is docx file
@@ -405,7 +394,7 @@ def save_uploadedfile(uploadedfile):
 def st_ui():
     st.title("Document digitization")
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    datafile = st.file_uploader(label='Your document will be processed', type=['png', 'jpg', 'pdf', 'docx'],
+    datafile = st.file_uploader(label='Your document will be processed', type=['png', 'jpg', 'pdf'],
                                 accept_multiple_files=False, label_visibility="visible")
     if datafile is not None:
         file_details = {"FileName": datafile.name, "FileType": datafile.type}
