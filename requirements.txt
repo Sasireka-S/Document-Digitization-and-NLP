@@ -107,7 +107,6 @@ python-dateutil
 python-pptx
 pyttsx3
 pytz
-pywin32
 PyYAML
 regex
 requests
