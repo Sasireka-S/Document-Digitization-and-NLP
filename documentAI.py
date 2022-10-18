@@ -1,8 +1,6 @@
 import os
-import streamlit as st
 import re
 import numpy as np
-import fitz
 import cv2
 import nltk
 from nltk.corpus import stopwords
@@ -20,12 +18,13 @@ import PyPDF2
 import pyttsx3 as pyttsx3
 from docx2pdf import convert
 import aspose.slides as slides
+import fitz
 from PIL import Image
 from gensim.parsing import remove_stopwords
 from pytesseract import pytesseract
 import warnings
 import pandas as pd
-
+import streamlit as st
 def docs_to_pdf(doc_file):
     """
     Convert .docx file to .pdf file if the input file is docx file
