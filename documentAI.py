@@ -115,18 +115,13 @@ def extract_text(doc_file):
             page_pixel = page.get_pixmap(matrix=dpi_matrix)
             page_pixel.set_dpi(dpi, dpi)
             page_pixel.save(f"{page.number}.png")
-            # Define path to tessaract.exe
-            # path_to_tesseract = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-            # Define path to image
             path_to_image = f"{page.number}.png"
-            # Point tessaract_cmd to tessaract.exe
-            # pytesseract.tesseract_cmd = path_to_tesseract
-            # pytesseract.pytesseract.tesseract_cmd = r'tesseract.exe'
-            # Open image with PIL
-            img = Image.open(path_to_image)
-            # Extract text from image
             reader = easyocr.Reader(['en'])
-            text = reader.readtext(path_to_image, detail = 0, paragraph=True)
+            txt = reader.readtext(path_to_image, detail = 0, paragraph=True)
+            for x in txt:
+                x = x.replace(":", "")
+                x = x.replace(";", "")
+                texts.extend(x.split("."))
     return texts
 def number(doc_file):
     open_doc = open(doc_file, 'rb')
@@ -406,7 +401,10 @@ def st_ui():
     for x in img_lst:
         img = cv2.imread(x, cv2.IMREAD_ANYCOLOR)
         st.image(img, width=200)
+    st.text("Extracting text in the document ...")
     doc_text = extract_text(doc_file)
+    for x in doc_text:
+        st.text(x)
     keywords = keyword_extraction(doc_text)
     df = make_df(doc_text)
     bag_of_words = bow(doc_text)
