@@ -121,12 +121,12 @@ def extract_text(doc_file):
             path_to_image = f"{page.number}.png"
             # Point tessaract_cmd to tessaract.exe
             # pytesseract.tesseract_cmd = path_to_tesseract
-            pytesseract.pytesseract.tesseract_cmd = r'tesseract.exe'
+            # pytesseract.pytesseract.tesseract_cmd = r'tesseract.exe'
             # Open image with PIL
             img = Image.open(path_to_image)
             # Extract text from image
             reader = easyocr.Reader(['en'])
-            text = reader.readtext(IMG_P)
+            text = reader.readtext(path_to_image)
             text = text.split("\n\n")
             for j in text:
                 j = j.replace('\n', ' ')
