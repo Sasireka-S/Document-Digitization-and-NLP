@@ -1,7 +1,6 @@
 altair
 argcomplete
 asgiref
-asposeslidescloud
 asttokens
 attrs
 autocorrect
