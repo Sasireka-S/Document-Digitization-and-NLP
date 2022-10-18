@@ -76,7 +76,7 @@ ninja
 nltk
 numpy
 olefile
-opencv-python
+opencv-python-headless
 openpyxl
 packaging
 pandas
