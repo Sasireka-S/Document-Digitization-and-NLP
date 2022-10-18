@@ -405,7 +405,7 @@ def st_ui():
     # show_images(img_lst)
     for x in img_lst:
         img = cv2.imread(x, cv2.IMREAD_ANYCOLOR)
-    st.image(img, width=200)
+        st.image(img, width=200)
     doc_text = extract_text(doc_file)
     keywords = keyword_extraction(doc_text)
     df = make_df(doc_text)
