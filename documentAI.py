@@ -17,7 +17,6 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import PyPDF2
 import pyttsx3 as pyttsx3
 from docx2pdf import convert
-import aspose.slides as slides
 import fitz
 from PIL import Image
 from gensim.parsing import remove_stopwords
@@ -34,18 +33,6 @@ def docs_to_pdf(doc_file):
     """
     if doc_file.split(".")[1] == 'docx':
         convert(doc_file)
-    return doc_file.split(".")[0]+".pdf"
-def ppt_to_pdf(doc_file):
-    """
-        Convert .ppt file to .pdf file if the input file is docx file
-        :parameter doc_file: URL of the ppt file
-        :return
-        URL of the pdf file
-    """
-    if doc_file.split(".")[1] == 'pptx' or doc_file.split(".")[1] == 'ppt' or doc_file.split(".")[1] == 'odp':
-        presentation = slides.Presentation(doc_file)
-        presentation.save(doc_file.split(".")[0]+".pdf", slides.export.SaveFormat.PDF)
-    return doc_file.split(".")[0]+".pdf"
 def img_to_pdf(doc_file):
     """
         Convert image file to .pdf file if the input file is docx file
@@ -417,7 +404,7 @@ def save_uploadedfile(uploadedfile):
 def st_ui():
     st.title("Document digitization")
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    datafile = st.file_uploader(label='Your document will be processed', type=['png', 'jpg', 'pdf', 'docx', 'ppt'],
+    datafile = st.file_uploader(label='Your document will be processed', type=['png', 'jpg', 'pdf', 'docx'],
                                 accept_multiple_files=False, label_visibility="visible")
     if datafile is not None:
         file_details = {"FileName": datafile.name, "FileType": datafile.type}
