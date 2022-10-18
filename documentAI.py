@@ -125,18 +125,7 @@ def extract_text(doc_file):
             img = Image.open(path_to_image)
             # Extract text from image
             reader = easyocr.Reader(['en'])
-            text = reader.readtext(path_to_image)
-            text = text.split("\n\n")
-            for j in text:
-                j = j.replace('\n', ' ')
-                if j == ' '*len(j):
-                    continue
-                else:
-                    lst = j.split(".")
-                    text = []
-                    for x in lst:
-                        text.append((x+"."))
-                    texts.extend(text)
+            text = reader.readtext(path_to_image, detail = 0, paragraph=in_line)
     return texts
 def number(doc_file):
     open_doc = open(doc_file, 'rb')
