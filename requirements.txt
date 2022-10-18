@@ -152,8 +152,3 @@ wasabi==0.10.1
 watchdog==2.1.9
 wcwidth==0.2.5
 wheel==0.36.2
-wordcloud==1.8.2.2
-words==0.0.1
-xlrd==1.2.0
-XlsxWriter==3.0.3
-zipp==3.9.0
