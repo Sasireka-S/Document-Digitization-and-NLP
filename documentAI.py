@@ -1,7 +1,6 @@
 import os
 import re
 import numpy as np
-import easyocr
 import cv2
 import nltk
 from nltk.corpus import stopwords
@@ -75,7 +74,6 @@ def get_images(doc_file):
                         mode = "RGB"
                     else:
                         mode = "P"
-
                     if xObject[obj]['/Filter'] == '/FlateDecode':
                         img = Image.frombytes(mode, size, data)
                         img.save(obj[1:] + ".png")
@@ -101,28 +99,20 @@ def show_images(img_lst):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 def extract_text(doc_file):
-    """
-    Convert each page in pdf file into image and extract text from it
-    :parameter doc_file: URL of the document
-    :return: texts: List of all the sentences of the document
-    """
-    texts = []
-    dpi = 200
-    dpi_matrix = fitz.Matrix(dpi / 72, dpi / 72)
-    file_path = doc_file
-    with fitz.open(file_path) as pdf_file:
-        for page in pdf_file:
-            page_pixel = page.get_pixmap(matrix=dpi_matrix)
-            page_pixel.set_dpi(dpi, dpi)
-            page_pixel.save(f"{page.number}.png")
-            path_to_image = f"{page.number}.png"
-            reader = easyocr.Reader(['en'], gpu = True)
-            txt = reader.readtext(path_to_image, detail = 0, paragraph=True)
-            for x in txt:
-                x = x.replace(":", "")
-                x = x.replace(";", "")
-                texts.extend(x.split("."))
-    return texts
+    doc = fitz.open(doc_file)
+    all_text = chr(12).join([page.get_text() for page in doc])
+    all_text = all_text.split(".")
+    l = len(all_text)
+    x = 0
+    while x < l:
+        all_text[x] = (all_text[x].replace('\n', ''))+'.'
+        if all_text[x].strip(' ') == ".":
+            all_text.remove(all_text[x])
+            l -= 1
+        else:
+            x += 1
+    return all_text
+
 def number(doc_file):
     open_doc = open(doc_file, 'rb')
     hand_book = PyPDF2.PdfFileReader(open_doc)
@@ -151,7 +141,7 @@ def keyword_extraction(text):
     """
     Extract only necessary words from the document
     :param text: List of sentences in document
-    :return: keywords: List of cleaned words
+    :return keywords: List of cleaned words
     """
     text = ' '.join([w.lower() for w in text])
     stop_words = stopwords.words('english')
@@ -173,7 +163,7 @@ def bow(doc_text):
     """
     Generate Bag of Words from the dataframe
     :param doc_text: List of sentences of the document
-    :return: data: bow dataframe
+    :return data: bow dataframe
     """
     df = make_df(doc_text)
     corpus = df.Script
@@ -187,7 +177,7 @@ def most_frequent(doc_text):
     """
     Gives most frequent words in the document
     :param doc_text: List of sentences of the document
-    :return: tops: frequent words
+    :return tops: frequent words
     """
     data = bow(doc_text)
     data = data.transpose()
@@ -196,11 +186,12 @@ def most_frequent(doc_text):
         top = data[c].sort_values(ascending=False)
         tops = list(zip(top.index, top.values))
     return tops
-def summarize(doc_text):
+def summarize(doc_text, n = 4):
     """
     Provides Summary of the document
     :param doc_text: List of sentences of the document
-    :return: summary: Document summary
+    :param n: Number of lines
+    :return summary: Document summary
     """
     lower_text = ' '.join([w.lower() for w in doc_text])
     formatted = re.sub('[^a-zA-Z]', ' ', lower_text)
@@ -228,7 +219,7 @@ def summarize(doc_text):
                         sentence_scores[sent] = word_frequencies[word]
                     else:
                         sentence_scores[sent] += word_frequencies[word]
-    summary_sentences = heapq.nlargest(7, sentence_scores, key=sentence_scores.get)
+    summary_sentences = heapq.nlargest(n, sentence_scores, key=sentence_scores.get)
     summary = '\n\n'.join(summary_sentences)
     return summary
 def lemmatization(doc_text):
@@ -265,6 +256,9 @@ def topic_modelling(doc_text):
         topic.append(temp)
     return topic
 def sentence_similarity(sent1, sent2):
+    """
+    Identifies similarity between two sentences
+    """
     stop_words = stopwords.words('english')
     sent1 = sent1.split()
     sent2 = sent2.split()
@@ -283,6 +277,7 @@ def sentence_similarity(sent1, sent2):
         vec2[every.index(w)] += 1
     return 1 - cosine_distance(vec1, vec2)
 def polarity(words):
+
     text = ' '.join(words)
     val = TextBlob(text).sentiment[0]
     polar_val = 'Positive'
@@ -299,6 +294,11 @@ def subjectivity(words):
         sub_val = 'Objective'
     return [val, sub_val]
 def entity(doc_text):
+    """
+    Performs Entity Recognition
+    :param doc_text: List of sentences in the document
+    :return: List of entites
+    """
     nlp = spacy.load("en_core_web_sm")
     entities = []
     for text in doc_text:
@@ -307,6 +307,11 @@ def entity(doc_text):
             entities.append([entity.text, entity.label_])
     return entities
 def pos_tag(doc_text):
+    """
+    Performs Parts Of Speech tagging
+    :param doc_text: List of sentences in the document
+    :return: List with POS tagging of tokenized words
+    """
     text = ' '.join([w.lower() for w in doc_text])
     pos = []
     tokens = word_tokenize(text)
@@ -386,7 +391,6 @@ def st_ui():
         file_details = {"FileName": datafile.name, "FileType": datafile.type}
         datafile = save_uploadedfile(datafile)
     else:
-        st.text("Processing going on for default document Untill You Upload")
         datafile = "demo.pdf"
     doc_file = img_to_pdf(datafile)
     author = str(get_author(doc_file))
@@ -404,7 +408,8 @@ def st_ui():
         st.image(img, width=200)
     st.text("Extracting text in the document ...")
     doc_text = extract_text(doc_file)
-    st.text(doc_text)
+    for x in doc_text:
+        st.text(x)
     keywords = keyword_extraction(doc_text)
     df = make_df(doc_text)
     bag_of_words = bow(doc_text)
@@ -419,8 +424,9 @@ def st_ui():
     st.text("Subjectivity :")
     st.text(subjectivity(keywords))
     st.text(sentence_similarity("Hello I am a document reader", "Welcome to document reader show"))
-    summary = summarize(doc_text)
     st.text("Summary of the document :")
+    n = st.number_input("Enter number of lines of summary needed", step = 1)
+    summary = summarize(doc_text, n)
     st.text(summary)
     topic = topic_modelling(doc_text)
     st.text("Topic modelling :")
