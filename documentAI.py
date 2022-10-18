@@ -121,6 +121,7 @@ def extract_text(doc_file):
             path_to_image = f"{page.number}.png"
             # Point tessaract_cmd to tessaract.exe
             # pytesseract.tesseract_cmd = path_to_tesseract
+            pytesseract.tesseract_cmd = r'tesseract.exe'
             # Open image with PIL
             img = Image.open(path_to_image)
             # Extract text from image
