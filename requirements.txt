@@ -72,11 +72,11 @@ matplotlib
 matplotlib-inline
 murmurhash
 networkx
+ninja
 nltk
 numpy
 olefile
 opencv-python
-opencv-python-headless
 openpyxl
 packaging
 pandas
@@ -93,6 +93,7 @@ prompt-toolkit
 protobuf
 pure-eval
 pyarrow
+pyclipper
 pycparser
 pycryptodome
 pydantic
@@ -120,6 +121,7 @@ scikit-learn
 scipy
 semver
 setuptools
+Shapely
 six
 smart-open
 smmap
