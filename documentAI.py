@@ -98,6 +98,13 @@ def show_images(img_lst):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 def extract_text(doc_file):
+    """
+    Extract text from the document, process it and return list of sentences in the document
+    :parameter
+    doc_file: URL of the document
+    :return
+    all_text: List of all the sentences in the document
+    """
     doc = fitz.open(doc_file)
     all_text = chr(12).join([page.get_text() for page in doc])
     all_text = all_text.split(".")
