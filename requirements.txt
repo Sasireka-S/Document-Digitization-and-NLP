@@ -100,7 +100,6 @@ Pympler
 PyMuPDF
 pyparsing
 PyPDF2
-pypiwin32
 pyrsistent
 pytesseract
 python-dateutil
