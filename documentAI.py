@@ -32,8 +32,7 @@ def docs_to_pdf(doc_file):
     URL of the pdf file
     """
     pdf_loc = doc_file.split(".")[0] + ".pdf"
-    if doc_file.split(".")[1] == 'docx':
-        convert(doc_file)
+    convert(doc_file)
     return pdf_loc 
 def img_to_pdf(doc_file):
     """
@@ -412,8 +411,9 @@ def st_ui():
         file_details = {"FileName": datafile.name, "FileType": datafile.type}
         datafile = save_uploadedfile(datafile)
     else:
-        datafile = "demo.docx"
-    doc_file = docs_to_pdf(datafile)
+        datafile = "demo.pdf"
+    if doc_file.split(".")[1] == 'docx':
+        doc_file = docs_to_pdf(datafile)
     doc_file = img_to_pdf(datafile)
     author = str(get_author(doc_file))
     st.text("Author of the Document : " + author)
