@@ -2,6 +2,7 @@ import os
 import re
 import numpy as np
 import easyocr
+import cv2
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
