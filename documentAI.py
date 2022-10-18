@@ -1,7 +1,7 @@
 import os
 import re
 import numpy as np
-import cv2
+import easyocr
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
@@ -17,9 +17,9 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import PyPDF2
 import pyttsx3 as pyttsx3
 import fitz
+import cv2
 from PIL import Image
 from gensim.parsing import remove_stopwords
-import easyocr
 import warnings
 import pandas as pd
 import streamlit as st
