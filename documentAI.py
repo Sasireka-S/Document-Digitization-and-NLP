@@ -386,6 +386,7 @@ def st_ui():
         file_details = {"FileName": datafile.name, "FileType": datafile.type}
         datafile = save_uploadedfile(datafile)
     else:
+        st.text("Processing going on for default document Untill You Upload")
         datafile = "demo.pdf"
     doc_file = img_to_pdf(datafile)
     author = str(get_author(doc_file))
