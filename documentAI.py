@@ -19,7 +19,7 @@ import pyttsx3 as pyttsx3
 import fitz
 from PIL import Image
 from gensim.parsing import remove_stopwords
-import pytesseract
+import easyocr
 import warnings
 import pandas as pd
 import streamlit as st
@@ -125,7 +125,8 @@ def extract_text(doc_file):
             # Open image with PIL
             img = Image.open(path_to_image)
             # Extract text from image
-            text = pytesseract.image_to_string(img)
+            reader = easyocr.Reader(['en'])
+            text = reader.readtext(IMG_P)
             text = text.split("\n\n")
             for j in text:
                 j = j.replace('\n', ' ')
