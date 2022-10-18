@@ -401,8 +401,6 @@ def st_ui():
         datafile = save_uploadedfile(datafile)
     else:
         datafile = "demo.pdf"
-    if doc_file.split(".")[1] == 'docx':
-        doc_file = docs_to_pdf(datafile)
     doc_file = img_to_pdf(datafile)
     author = str(get_author(doc_file))
     st.text("Author of the Document : " + author)
