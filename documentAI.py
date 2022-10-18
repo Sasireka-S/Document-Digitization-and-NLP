@@ -31,8 +31,10 @@ def docs_to_pdf(doc_file):
     :return
     URL of the pdf file
     """
+    pdf_loc = doc_file.split(".")[0] + ".pdf"
     if doc_file.split(".")[1] == 'docx':
         convert(doc_file)
+    return pdf_loc 
 def img_to_pdf(doc_file):
     """
         Convert image file to .pdf file if the input file is docx file
@@ -152,7 +154,7 @@ def number(doc_file):
     hand_book = PyPDF2.PdfFileReader(open_doc)
     return hand_book.numPages
 
-def author(doc_file):
+def get_author(doc_file):
     open_doc = open(doc_file, 'rb')
     hand_book = PyPDF2.PdfFileReader(open_doc)
     try:
@@ -160,7 +162,7 @@ def author(doc_file):
     except:
         return None
 
-def creation_date(doc_file):
+def get_creation_date(doc_file):
     open_doc = open(doc_file, 'rb')
     hand_book = PyPDF2.PdfFileReader(open_doc)
     cdate = (hand_book.getDocumentInfo()['/CreationDate'])
@@ -413,9 +415,9 @@ def st_ui():
         datafile = "demo.docx"
     doc_file = docs_to_pdf(datafile)
     doc_file = img_to_pdf(datafile)
-    author = str(author(doc_file))
+    author = str(get_author(doc_file))
     st.text("Author of the Document : " + author)
-    creationDate = creation_date(doc_file)
+    creationDate = get_creation_date(doc_file)
     st.text("Date of Creation " + creationDate)
     total_pages = number(doc_file)
     st.text("Document metadata :")
