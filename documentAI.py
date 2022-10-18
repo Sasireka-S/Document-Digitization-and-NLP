@@ -404,8 +404,7 @@ def st_ui():
         st.image(img, width=200)
     st.text("Extracting text in the document ...")
     doc_text = extract_text(doc_file)
-    for x in doc_text:
-        st.text(x)
+    st.text(doc_text)
     keywords = keyword_extraction(doc_text)
     df = make_df(doc_text)
     bag_of_words = bow(doc_text)
