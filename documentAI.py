@@ -116,7 +116,7 @@ def extract_text(doc_file):
             page_pixel.set_dpi(dpi, dpi)
             page_pixel.save(f"{page.number}.png")
             path_to_image = f"{page.number}.png"
-            reader = easyocr.Reader(['en'])
+            reader = easyocr.Reader(['en'], gpu = True)
             txt = reader.readtext(path_to_image, detail = 0, paragraph=True)
             for x in txt:
                 x = x.replace(":", "")
